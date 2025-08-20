@@ -11,45 +11,14 @@ class Guser < Formula
     # Install the main script as guser
     bin.install "git-user-manager.py" => "guser"
     
-    # Create wrapper scripts directly in install phase
-    (bin/"guser-add").write <<~EOS
-      #!/bin/bash
-      exec "#{bin}/guser" add "$@"
-    EOS
-
-    (bin/"guser-list").write <<~EOS
-      #!/bin/bash
-      exec "#{bin}/guser" list "$@"
-    EOS
-
-    (bin/"guser-switch").write <<~EOS
-      #!/bin/bash
-      exec "#{bin}/guser" switch "$@"
-    EOS
-
-    (bin/"guser-current").write <<~EOS
-      #!/bin/bash
-      exec "#{bin}/guser" current "$@"
-    EOS
-
-    (bin/"guser-remove").write <<~EOS
-      #!/bin/bash
-      exec "#{bin}/guser" remove "$@"
-    EOS
-
-    (bin/"guser-help").write <<~EOS
-      #!/bin/bash
-      exec "#{bin}/guser" help "$@"
-    EOS
-
-    # Make all scripts executable
-    chmod 0755, bin/"guser"
-    chmod 0755, bin/"guser-add"
-    chmod 0755, bin/"guser-list" 
-    chmod 0755, bin/"guser-switch"
-    chmod 0755, bin/"guser-current"
-    chmod 0755, bin/"guser-remove"
-    chmod 0755, bin/"guser-help"
+    # Create and install wrapper scripts for convenience
+    %w[add list switch current remove help].each do |cmd|
+      (buildpath/"guser-#{cmd}").write <<~EOS
+        #!/bin/bash
+        exec "#{HOMEBREW_PREFIX}/bin/guser" #{cmd} "$@"
+      EOS
+      bin.install "guser-#{cmd}"
+    end
   end
 
   test do
