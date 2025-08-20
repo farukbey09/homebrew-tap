@@ -11,43 +11,39 @@ class Guser < Formula
     # Install the main script as guser
     bin.install "git-user-manager.py" => "guser"
     
-    # Make it executable
-    chmod 0755, bin/"guser"
-  end
-
-  def post_install
-    # Create wrapper scripts for aliases
+    # Create wrapper scripts directly in install phase
     (bin/"guser-add").write <<~EOS
       #!/bin/bash
-      #{bin}/guser add "$@"
+      exec "#{bin}/guser" add "$@"
     EOS
 
     (bin/"guser-list").write <<~EOS
       #!/bin/bash
-      #{bin}/guser list "$@"
+      exec "#{bin}/guser" list "$@"
     EOS
 
     (bin/"guser-switch").write <<~EOS
       #!/bin/bash
-      #{bin}/guser switch "$@"
+      exec "#{bin}/guser" switch "$@"
     EOS
 
     (bin/"guser-current").write <<~EOS
       #!/bin/bash
-      #{bin}/guser current "$@"
+      exec "#{bin}/guser" current "$@"
     EOS
 
     (bin/"guser-remove").write <<~EOS
       #!/bin/bash
-      #{bin}/guser remove "$@"
+      exec "#{bin}/guser" remove "$@"
     EOS
 
     (bin/"guser-help").write <<~EOS
       #!/bin/bash
-      #{bin}/guser help "$@"
+      exec "#{bin}/guser" help "$@"
     EOS
 
-    # Make wrapper scripts executable
+    # Make all scripts executable
+    chmod 0755, bin/"guser"
     chmod 0755, bin/"guser-add"
     chmod 0755, bin/"guser-list" 
     chmod 0755, bin/"guser-switch"
